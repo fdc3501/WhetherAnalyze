@@ -111,6 +111,33 @@ body::before {
     margin-bottom: 1rem;
 }
 
+.hero-image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -1rem;
+}
+
+.hero-image {
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.1));
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
 .glow-text {
     font-size: 3.5rem;
     font-weight: 800;
