@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tempDiffEl = document.getElementById('tempDiff');
     const summaryText = document.getElementById('summaryText');
     const tabBtns = document.querySelectorAll('.tab-btn');
+    const chartWrapper = document.getElementById('chartWrapper');
+    const weatherGrid = document.getElementById('weatherGrid');
     const ctx = document.getElementById('weatherChart').getContext('2d');
 
     let weatherChart;
@@ -27,31 +29,30 @@ document.addEventListener('DOMContentLoaded', () => {
         return '비 🌧️';
     }
 
+    function getStatusIcon(temp, precip) {
+        if (precip <= 0.1) return '☀️';
+        if (temp <= 0) return '❄️';
+        return '🌧️';
+    }
+
     async function fetchWeatherData(location) {
         const { lat, lon } = coords[location];
         const today = new Date();
-
-        const startDate2026 = new Date(today);
-        startDate2026.setDate(today.getDate() - 10);
-        const endDate2026 = new Date(today);
-        endDate2026.setDate(today.getDate() + 14);
-
-        const startDate2025 = new Date(startDate2026);
-        startDate2025.setFullYear(2025);
-        const endDate2025 = new Date(endDate2026);
-        endDate2025.setFullYear(2025);
-
         const formatDate = (d) => d.toISOString().split('T')[0];
+
+        const startDate2025 = new Date();
+        startDate2025.setFullYear(2025);
+        startDate2025.setDate(today.getDate() - 10);
+        const endDate2025 = new Date(startDate2025);
+        endDate2025.setDate(startDate2025.getDate() + 24);
 
         try {
             updateBtn.disabled = true;
-            updateBtn.textContent = '데이터 업데이트 중...';
+            updateBtn.textContent = '업데이트 중...';
 
-            // 1. Fetch Current Year
             const forecastRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,precipitation_sum&past_days=10&forecast_days=14&timezone=auto`);
             const forecastData = await forecastRes.json();
 
-            // 2. Fetch Last Year Archive
             const archiveRes = await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${formatDate(startDate2025)}&end_date=${formatDate(endDate2025)}&daily=temperature_2m_max,precipitation_sum&timezone=auto`);
             const archiveData = await archiveRes.json();
 
@@ -62,11 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastYearTemp: archiveData.daily.temperature_2m_max,
                 lastYearPrecip: archiveData.daily.precipitation_sum
             };
-
             return cachedData;
         } catch (error) {
             console.error('Weather Data Error:', error);
-            alert('날씨 데이터를 가져오는데 실패했습니다.');
             return null;
         } finally {
             updateBtn.disabled = false;
@@ -81,130 +80,70 @@ document.addEventListener('DOMContentLoaded', () => {
         const todayIdx = 10;
         const curTemp = data.thisYearTemp[todayIdx];
         const curPrecip = data.thisYearPrecip[todayIdx];
-        const lyTemp = data.lastYearTemp[todayIdx];
-        const lyPrecip = data.lastYearPrecip[todayIdx];
+        const diff = (curTemp - data.lastYearTemp[todayIdx]).toFixed(1);
 
-        if (curTemp !== null && lyTemp !== null) {
-            const diff = (curTemp - lyTemp).toFixed(1);
-            currentTempEl.textContent = `${curTemp.toFixed(1)}°C`;
+        currentTempEl.textContent = `${curTemp.toFixed(1)}°C`;
+        currentPrecipEl.textContent = getWeatherStatus(curTemp, curPrecip);
+        lastYearPrecipEl.textContent = getWeatherStatus(data.lastYearTemp[todayIdx], data.lastYearPrecip[todayIdx]);
+        tempDiffEl.textContent = `${diff > 0 ? '+' : ''}${diff}°C`;
+        tempDiffEl.style.color = diff > 0 ? '#ef4444' : '#3b82f6';
 
-            currentPrecipEl.textContent = getWeatherStatus(curTemp, curPrecip);
-            lastYearPrecipEl.textContent = getWeatherStatus(lyTemp, lyPrecip);
+        renderContent();
+    }
 
-            tempDiffEl.textContent = `${diff > 0 ? '+' : ''}${diff}°C`;
-            tempDiffEl.style.color = diff > 0 ? '#ef4444' : '#3b82f6';
-            renderSummary(location, diff, curTemp, curPrecip, lyTemp, lyPrecip);
+    function renderContent() {
+        if (!cachedData) return;
+
+        if (currentTab === 'temp') {
+            chartWrapper.classList.remove('hidden');
+            weatherGrid.classList.add('hidden');
+            renderChart();
+        } else {
+            chartWrapper.classList.add('hidden');
+            weatherGrid.classList.remove('hidden');
+            renderGrid();
         }
-
-        renderChart();
     }
 
     function renderChart() {
-        if (!cachedData) return;
-        if (weatherChart) {
-            weatherChart.destroy();
-        }
-
-        const isTemp = currentTab === 'temp';
-
-        const thisYearStatusData = cachedData.thisYearPrecip.map((p, i) => {
-            if (p <= 0.1) return 0; // Clear
-            return cachedData.thisYearTemp[i] <= 0 ? 2 : 1; // 2: Snow, 1: Rain
-        });
-
-        const lastYearStatusData = cachedData.lastYearPrecip.map((p, i) => {
-            if (p <= 0.1) return 0;
-            return cachedData.lastYearTemp[i] <= 0 ? 2 : 1;
-        });
-
-        const datasets = isTemp ? [
-            {
-                label: '올해 최고 기온 (°C)',
-                data: cachedData.thisYearTemp,
-                borderColor: '#6366f1',
-                backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                fill: true,
-                tension: 0.4
-            },
-            {
-                label: '작년 최고 기온 (°C)',
-                data: cachedData.lastYearTemp,
-                borderColor: '#94a3b8',
-                borderDash: [5, 5],
-                fill: false,
-                tension: 0.4
-            }
-        ] : [
-            {
-                label: '올해 날씨 상태',
-                data: thisYearStatusData,
-                backgroundColor: thisYearStatusData.map(v => v === 2 ? '#93c5fd' : (v === 1 ? '#3b82f6' : 'rgba(0,0,0,0.05)')),
-                borderRadius: 5
-            },
-            {
-                label: '작년 날씨 상태',
-                data: lastYearStatusData,
-                backgroundColor: lastYearStatusData.map(v => v === 2 ? '#cbd5e1' : (v === 1 ? '#94a3b8' : 'rgba(0,0,0,0.02)')),
-                borderRadius: 5
-            }
-        ];
-
+        if (weatherChart) weatherChart.destroy();
         weatherChart = new Chart(ctx, {
-            type: isTemp ? 'line' : 'bar',
+            type: 'line',
             data: {
                 labels: cachedData.labels,
-                datasets: datasets
+                datasets: [
+                    { label: '올해 2026', data: cachedData.thisYearTemp, borderColor: '#6366f1', fill: true, backgroundColor: 'rgba(99, 102, 241, 0.1)', tension: 0.4 },
+                    { label: '작년 2025', data: cachedData.lastYearTemp, borderColor: '#94a3b8', borderDash: [5, 5], tension: 0.4 }
+                ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { intersect: false, mode: 'index' },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: isTemp ? undefined : 2.5,
-                        ticks: isTemp ? undefined : {
-                            stepSize: 1,
-                            callback: function (value) {
-                                if (value === 0) return '맑음';
-                                if (value === 1) return '비 🌧️';
-                                if (value === 2) return '눈 ❄️';
-                                return '';
-                            }
-                        },
-                        title: { display: true, text: isTemp ? '기온 (°C)' : '기상 상태' },
-                        grid: { color: 'rgba(0,0,0,0.05)' }
-                    },
-                    x: { grid: { display: false } }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                if (isTemp) return context.dataset.label + ': ' + context.parsed.y + '°C';
-                                const val = context.parsed.y;
-                                const status = val === 0 ? '맑음' : (val === 2 ? '눈 ❄️' : '비 🌧️');
-                                return context.dataset.label + ': ' + status;
-                            }
-                        }
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false } }
         });
     }
 
-    function renderSummary(location, diff, curTemp, curPrecip, lyTemp, lyPrecip) {
-        const name = coords[location].name;
-        const curStatus = getWeatherStatus(curTemp, curPrecip);
-        const lyStatus = getWeatherStatus(lyTemp, lyPrecip);
+    function renderGrid() {
+        weatherGrid.innerHTML = '';
+        cachedData.labels.forEach((date, i) => {
+            const tile = document.createElement('div');
+            tile.className = 'status-tile';
 
-        summaryText.innerHTML = `
-            <div class="history-item" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
-                <p><strong>${name} 지역</strong> 날씨 현황 비교</p>
-                <p>기온: 작년에 비해 <strong>${Math.abs(diff)}°C ${diff > 0 ? '따뜻해졌습니다' : '추워졌습니다'}</strong>.</p>
-                <p>상세상태: 올해는 <strong>${curStatus}</strong>, 작년에는 <strong>${lyStatus}</strong> 이었습니다.</p>
-            </div>
-        `;
+            const curIcon = getStatusIcon(cachedData.thisYearTemp[i], cachedData.thisYearPrecip[i]);
+            const lyIcon = getStatusIcon(cachedData.lastYearTemp[i], cachedData.lastYearPrecip[i]);
+
+            tile.innerHTML = `
+                <div class="tile-date">${date}</div>
+                <div class="tile-comparison">
+                    <div class="compare-item">
+                        <span class="compare-label">'26</span>
+                        <span class="compare-icon">${curIcon}</span>
+                    </div>
+                    <div class="compare-item">
+                        <span class="compare-label">'25</span>
+                        <span class="compare-icon">${lyIcon}</span>
+                    </div>
+                </div>
+            `;
+            weatherGrid.appendChild(tile);
+        });
     }
 
     tabBtns.forEach(btn => {
@@ -212,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentTab = btn.dataset.tab;
-            renderChart();
+            renderContent();
         });
     });
 

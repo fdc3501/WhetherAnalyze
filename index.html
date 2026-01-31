@@ -64,8 +64,13 @@
                 <button class="tab-btn" data-tab="precip">강우/강설 여부</button>
             </div>
 
-            <div class="chart-container">
-                <canvas id="weatherChart"></canvas>
+            <div class="display-area">
+                <div id="chartWrapper" class="chart-container">
+                    <canvas id="weatherChart"></canvas>
+                </div>
+                <div id="weatherGrid" class="status-grid-view hidden">
+                    <!-- Status tiles will be generated here -->
+                </div>
             </div>
         </section>
 
