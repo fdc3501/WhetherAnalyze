@@ -28,12 +28,19 @@
     <div class="background-radial"></div>
 
     <main class="container">
+        <nav class="nav-menu">
+            <a href="#analysis">분석 도구</a>
+            <a href="#about">서비스 소개</a>
+            <a href="#methodology">분석 방법</a>
+            <a href="#privacy">개인정보처리방침</a>
+        </nav>
+
         <header class="header">
             <h1 class="glow-text">WEATHER ANALYTICS</h1>
             <p class="subtitle">올해와 작년 날씨 비교 분석</p>
         </header>
 
-        <section class="generator-card">
+        <section id="analysis" class="generator-card">
             <div class="selection-area">
                 <select id="locationSelect" class="styled-select">
                     <option value="seoul">서울 (Seoul)</option>
@@ -76,6 +83,36 @@
                 <div id="weatherGrid" class="status-grid-view hidden">
                     <!-- Status tiles will be generated here -->
                 </div>
+            </div>
+        </section>
+
+        <section id="about" class="history-section info-card">
+            <h2 class="section-title">서비스 소개</h2>
+            <div class="info-content">
+                <p><strong>WEATHER ANALYTICS</strong>는 기후 변화의 흐름을 데이터로 증명합니다. 단순한 일기예보를 넘어, '작년의 오늘'과 '올해의 오늘'을 정밀하게
+                    대조함으로써 우리가 체감하는 계절의 변화를 수치화하여 제공합니다.</p>
+                <p>농업, 야외 행사 계획, 혹은 단순한 기후 변화에 대한 호기심을 충족시키기 위해 설계되었으며, 과거의 기록을 거울삼아 현재의 날씨를 더 깊이 이해하는 것을 목표로 합니다.</p>
+            </div>
+        </section>
+
+        <section id="methodology" class="history-section info-card">
+            <h2 class="section-title">분석 방법론 (Methodology)</h2>
+            <div class="info-content">
+                <p>본 사이트의 데이터는 독창적인 알고리즘과 외부 API 데이터의 결합으로 생성됩니다.</p>
+                <ul>
+                    <li><strong>과거 데이터</strong>: Open-Meteo Historical Archive를 통해 1940년부터 축적된 기상 실측 기록을 호출합니다.</li>
+                    <li><strong>현재/미래 데이터</strong>: 전 세계 주요 기상 모델(ECMWF, GFS)의 앙상블 예보 데이터를 실시간으로 수집 및 가공합니다.</li>
+                    <li><strong>정밀도</strong>: 선택된 지역의 위도/경도 좌표를 기반으로 0.1도 단위의 미세 조정을 거쳐 지역별 편차를 최소화합니다.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="privacy" class="history-section info-card">
+            <h2 class="section-title">개인정보처리방침 (Privacy Policy)</h2>
+            <div class="info-content">
+                <p>본 서비스는 사용자의 위치 정보를 포함한 어떠한 개인 데이터도 서버에 저장하지 않습니다.</p>
+                <p>지역 선택은 전적으로 사용자의 브라우저 내에서 처리되며, 구글 애드센스 등 타사 광고 서비스가 쿠키를 통해 비식별 사용자 정보를 수집할 수 있습니다. 이는 광고의 관련성을 높이기
+                    위한 목적이며, 사용자는 브라우저 설정을 통해 이를 언제든지 거부할 수 있습니다.</p>
             </div>
         </section>
 

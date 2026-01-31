@@ -66,14 +66,34 @@ body::before {
 
 /* Layout */
 .container {
-    max-width: 800px;
+    max-width: 900px;
     width: 90%;
-    margin: 4rem auto;
+    margin: 2rem auto;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 3rem;
     z-index: 1;
+}
+
+.nav-menu {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-menu a:hover {
+    color: var(--primary-accent);
 }
 
 .header {
@@ -174,6 +194,36 @@ body::before {
 }
 
 /* Tabs Area */
+.info-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 2rem;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.info-content {
+    color: var(--text-dim);
+    line-height: 1.8;
+}
+
+.info-content p {
+    margin-bottom: 1rem;
+}
+
+.info-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.info-content li {
+    margin-bottom: 0.5rem;
+}
+
+.info-content strong {
+    color: var(--text-main);
+}
+
 .tabs-area {
     display: flex;
     gap: 0.5rem;
