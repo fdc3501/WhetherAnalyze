@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const chartWrapper = document.getElementById('chartWrapper');
     const weatherGrid = document.getElementById('weatherGrid');
+    const outfitCard = document.getElementById('outfitCard');
+    const outfitImg = document.getElementById('outfitImg');
+    const outfitText = document.getElementById('outfitText');
     const ctx = document.getElementById('weatherChart').getContext('2d');
 
     let weatherChart;
@@ -33,6 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (precip <= 0.1) return '☀️';
         if (temp <= 0) return '❄️';
         return '🌧️';
+    }
+
+    function getOutfitData(temp) {
+        if (temp < 5) return { img: 'outfit_winter.png', text: '롱패딩, 목도리 필수! ❄️' };
+        if (temp < 12) return { img: 'outfit_coat.png', text: '코트나 가죽자켓이 좋아요! 🧥' };
+        if (temp < 20) return { img: 'outfit_jacket.png', text: '자켓이나 가디건 추천! 🧥' };
+        return { img: 'outfit_summer.png', text: '가벼운 셔츠나 반팔! 👕' };
     }
 
     async function fetchWeatherData(location) {
@@ -87,6 +97,12 @@ document.addEventListener('DOMContentLoaded', () => {
         lastYearPrecipEl.textContent = getWeatherStatus(data.lastYearTemp[todayIdx], data.lastYearPrecip[todayIdx]);
         tempDiffEl.textContent = `${diff > 0 ? '+' : ''}${diff}°C`;
         tempDiffEl.style.color = diff > 0 ? '#ef4444' : '#3b82f6';
+
+        // Update Outfit
+        const outfit = getOutfitData(curTemp);
+        outfitImg.src = outfit.img;
+        outfitText.textContent = outfit.text;
+        outfitCard.classList.remove('hidden');
 
         renderContent();
     }

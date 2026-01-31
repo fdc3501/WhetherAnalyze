@@ -53,22 +53,32 @@
                 <button id="updateBtn" class="primary-btn">데이터 분석하기</button>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">오늘 최고 기온</span>
-                    <span class="stat-value" id="currentTemp">--°C</span>
+            <div class="stats-container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">오늘 최고 기온</span>
+                        <span class="stat-value" id="currentTemp">--°C</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">상태 (올해)</span>
+                        <span class="stat-value" id="currentPrecip">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">상태 (작년)</span>
+                        <span class="stat-value" id="lastYearPrecip">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">기온 변동</span>
+                        <span class="stat-value" id="tempDiff">--</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">상태 (올해)</span>
-                    <span class="stat-value" id="currentPrecip">--</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">상태 (작년)</span>
-                    <span class="stat-value" id="lastYearPrecip">--</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">기온 변동</span>
-                    <span class="stat-value" id="tempDiff">--</span>
+
+                <div id="outfitCard" class="outfit-card hidden">
+                    <div class="outfit-title">오늘의 옷차림 추천</div>
+                    <div class="outfit-content">
+                        <img id="outfitImg" src="" alt="Outfit Recommendation" class="outfit-img">
+                        <div id="outfitText" class="outfit-text">--</div>
+                    </div>
                 </div>
             </div>
 
