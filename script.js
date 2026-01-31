@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: cachedData.labels,
                 datasets: [
                     {
-                        label: '올해 2026',
+                        label: '올해 최고 기온 (2026)',
                         data: cachedData.thisYearTemp,
                         borderColor: '#6366f1',
                         fill: true,
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         pointBorderWidth: pointBorderWidths
                     },
                     {
-                        label: '작년 2025',
+                        label: '작년 최고 기온 (2025)',
                         data: cachedData.lastYearTemp,
                         borderColor: '#94a3b8',
                         borderDash: [5, 5],
