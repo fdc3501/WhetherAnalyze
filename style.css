@@ -79,21 +79,31 @@ body::before {
 .nav-menu {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    gap: 1.5rem;
+    margin: 1rem auto 0;
+    padding: 0.8rem 2.5rem;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    width: fit-content;
 }
 
 .nav-menu a {
     text-decoration: none;
-    color: var(--text-dim);
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
 }
 
 .nav-menu a:hover {
     color: var(--primary-accent);
+    background: rgba(99, 102, 241, 0.05);
 }
 
 .header {
