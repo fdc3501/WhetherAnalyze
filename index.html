@@ -1,59 +1,78 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>럭키 로또 - 행운을 부르는 번호 추천</title>
-    <meta name="description" content="AI 기반 로또 번호 추천 및 오늘의 행운 번호 생성기. 당신의 대박을 응원합니다.">
-    
+    <title>날씨 비교 분석 - 올해 vs 작년</title>
+    <meta name="description" content="올해와 작년의 날씨 데이터를 비교 분석합니다. 과거 10일부터 미래 30일까지의 기온 변화를 확인하세요.">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="background-radial"></div>
-    <div class="stars-container" id="starsContainer"></div>
 
     <main class="container">
         <header class="header">
-            <h1 class="glow-text">LUCKY LOTTO</h1>
-            <p class="subtitle">오늘의 행운이 당신과 함께하기를</p>
+            <h1 class="glow-text">WEATHER ANALYTICS</h1>
+            <p class="subtitle">올해와 작년 날씨 비교 분석</p>
         </header>
 
         <section class="generator-card">
-            <div class="numbers-display" id="numbersDisplay">
-                <div class="lotto-ball empty" id="ball-1">?</div>
-                <div class="lotto-ball empty" id="ball-2">?</div>
-                <div class="lotto-ball empty" id="ball-3">?</div>
-                <div class="lotto-ball empty" id="ball-4">?</div>
-                <div class="lotto-ball empty" id="ball-5">?</div>
-                <div class="lotto-ball empty" id="ball-6">?</div>
+            <div class="selection-area">
+                <select id="locationSelect" class="styled-select">
+                    <option value="seoul">서울 (Seoul)</option>
+                    <option value="busan">부산 (Busan)</option>
+                    <option value="incheon">인천 (Incheon)</option>
+                    <option value="daegu">대구 (Daegu)</option>
+                    <option value="jeju">제주 (Jeju)</option>
+                </select>
+                <button id="updateBtn" class="primary-btn">데이터 분석하기</button>
             </div>
 
-            <div class="action-area">
-                <button id="generateBtn" class="primary-btn">
-                    <span>행운의 번호 생성하기</span>
-                    <div class="button-glow"></div>
-                </button>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">오늘 기온</span>
+                    <span class="stat-value" id="currentTemp">--°C</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">작년 오늘</span>
+                    <span class="stat-value" id="lastYearTemp">--°C</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">변동폭</span>
+                    <span class="stat-value" id="tempDiff">--</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="weatherChart"></canvas>
             </div>
         </section>
 
         <section class="history-section">
-            <h2 class="section-title">최근 생성 번호</h2>
-            <div id="historyList" class="history-list">
-                <!-- History items will be added here -->
-                <p class="empty-history">아직 생성된 번호가 없습니다.</p>
+            <h2 class="section-title">분석 요약</h2>
+            <div id="summaryText" class="history-list">
+                <p class="empty-history">지역을 선택하고 분석 버튼을 눌러주세요.</p>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 Lucky Lotto. All Rights Reserved.</p>
+        <p>&copy; 2026 Weather Analytics. All Rights Reserved.</p>
     </footer>
 
     <script src="script.js"></script>
 </body>
+
 </html>
