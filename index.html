@@ -28,21 +28,29 @@
     <div class="background-radial"></div>
 
     <main class="container">
-        <nav class="nav-menu">
-            <a href="#">홈</a>
-            <a href="#analysis">분석 도구</a>
-            <a href="#about">서비스 소개</a>
-            <a href="#methodology">분석 방법</a>
-            <a href="#partnership">제휴 문의</a>
-            <a href="#privacy">개인정보처리방침</a>
-        </nav>
+        <section class="hero-section">
+            <nav class="nav-menu">
+                <a href="#">홈</a>
+                <a href="#analysis">분석 도구</a>
+                <a href="#about">서비스 소개</a>
+                <a href="#methodology">분석 방법</a>
+                <a href="#partnership">제휴 문의</a>
+                <a href="#privacy">개인정보처리방침</a>
+            </nav>
 
-        <header class="header">
-            <h1 class="glow-text">WEATHER ANALYTICS</h1>
-            <p class="subtitle"><span>작년의 오늘과 올해의 오늘, 얼마나 달라졌을까요?</span></p>
-        </header>
+            <header class="header">
+                <h1 class="glow-text">WEATHER ANALYTICS</h1>
+                <p class="subtitle"><span>작년의 오늘과 올해의 오늘, 얼마나 달라졌을까요?</span></p>
+            </header>
 
-        <section id="analysis" class="generator-card">
+            <div class="scroll-indicator">
+                <div class="mouse"></div>
+                <p>기후의 기록을 확인해보세요</p>
+                <div class="arrow"><span></span><span></span><span></span></div>
+            </div>
+        </section>
+
+        <section id="analysis" class="generator-card reveal">
             <div class="selection-area">
                 <select id="locationSelect" class="styled-select">
                     <option value="seoul">서울 (Seoul)</option>
@@ -98,7 +106,7 @@
             </div>
         </section>
 
-        <section id="about" class="history-section info-card">
+        <section id="about" class="history-section info-card reveal">
             <h2 class="section-title">서비스 소개</h2>
             <div class="info-content">
                 <p><strong>WEATHER ANALYTICS</strong>는 기후 변화의 흐름을 데이터로 증명합니다. 단순한 일기예보를 넘어, '작년의 오늘'과 '올해의 오늘'을 정밀하게
@@ -107,7 +115,7 @@
             </div>
         </section>
 
-        <section id="methodology" class="history-section info-card">
+        <section id="methodology" class="history-section info-card reveal">
             <h2 class="section-title">분석 방법론 (Methodology)</h2>
             <div class="info-content">
                 <p>본 사이트의 데이터는 독창적인 알고리즘과 외부 API 데이터의 결합으로 생성됩니다.</p>
@@ -119,7 +127,7 @@
             </div>
         </section>
 
-        <section id="partnership" class="history-section info-card">
+        <section id="partnership" class="history-section info-card reveal">
             <h2 class="section-title">제휴 문의</h2>
             <div class="info-content">
                 <p>WEATHER ANALYTICS와의 협력 및 데이터 제휴 제안을 환영합니다. 아래 폼을 통해 문의해 주시면 신속히 답변해 드리겠습니다.</p>
@@ -142,7 +150,7 @@
             </div>
         </section>
 
-        <section id="privacy" class="history-section info-card">
+        <section id="privacy" class="history-section info-card reveal">
             <h2 class="section-title">개인정보처리방침 (Privacy Policy)</h2>
             <div class="info-content">
                 <p>본 서비스는 사용자의 위치 정보를 포함한 어떠한 개인 데이터도 서버에 저장하지 않습니다.</p>
