@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 :root {
     --bg-main: #f8fafc;
     --card-bg: rgba(255, 255, 255, 0.8);
@@ -640,6 +644,43 @@ body::before {
     background: var(--primary-accent);
     color: white;
     border-color: var(--primary-accent);
+}
+
+/* Floating Scroll Top Button */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+}
+
+.scroll-top-btn:hover {
+    background: var(--primary-accent);
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+}
+
+.scroll-top-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
 }
 
 /* Footer */

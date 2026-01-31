@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const outfitCard = document.getElementById('outfitCard');
     const outfitImg = document.getElementById('outfitImg');
     const outfitText = document.getElementById('outfitText');
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
     const ctx = document.getElementById('weatherChart').getContext('2d');
 
     let weatherChart;
@@ -226,5 +227,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     updateBtn.addEventListener('click', () => updateDashboard(locationSelect.value));
+
+    // Scroll To Top Logic
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.remove('hidden');
+        } else {
+            scrollTopBtn.classList.add('hidden');
+        }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     updateDashboard('seoul');
 });
