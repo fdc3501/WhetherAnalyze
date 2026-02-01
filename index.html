@@ -49,7 +49,7 @@
         content="작년과 올해의 오늘 날씨가 궁금하신가요? WEATHER ANALYTICS에서 과거 기록과 실시간 예보를 정밀 비교하고 스마트한 옷차림 추천을 확인해보세요.">
     <meta property="twitter:image" content="https://whetheranalyze.pages.dev/hero-weather.png">
 
-    <!-- JSON-LD Structured Data -->
+    <!-- JSON-LD Structured Data (GEO Optimized) -->
     <script type="application/ld+json">
     [
       {
@@ -81,6 +81,36 @@
             "position": 2,
             "name": "날씨 분석 도구",
             "item": "https://whetheranalyze.pages.dev/#analysis"
+          }
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "올해 날씨가 작년보다 더 추운가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "지역을 검색하시면 실시간 기상 모델 데이터와 과거 1940년부터의 데이터를 대조하여 오늘 최고 기온이 작년 대비 몇 도 차이가 나는지 즉시 확인하실 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "내일은 어떤 옷을 입어야 할까요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "분석하기 버튼을 누르면 기온 데이터에 기반하여 롱패딩, 코트, 자켓 등 기온별 최적의 옷차림 추천 이미지를 제공해 드립니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "과거 날씨 데이터는 얼마나 정확한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Weather Analytics는 Open-Meteo의 0.1도 단위 고해상도 아카이브 데이터를 활용하여 전 세계 주요 도시의 정밀한 기상 실측 정보를 제공합니다."
+            }
           }
         ]
       }
@@ -200,15 +230,51 @@
                 <div id="weatherGrid" class="status-grid-view hidden">
                     <!-- Status tiles will be generated here -->
                 </div>
+                <!-- GEO: AI Insights for contextual search -->
+                <div id="aiInsightArea" class="ai-insight-card hidden">
+                    <h3 class="insight-title"><span class="ai-badge">AI INSIGHT</span> 오늘의 날씨 분석 리포트</h3>
+                    <div id="aiInsightText" class="insight-content">
+                        <!-- Dynamic analysis will be inserted by JS -->
+                    </div>
+                </div>
             </div>
         </section>
 
         <section id="about" class="history-section info-card reveal">
-            <h2 class="section-title">서비스 소개</h2>
+            <h2 class="section-title">누가, 언제 이 서비스를 사용하면 좋을까요?</h2>
             <div class="info-content">
-                <p><strong>WEATHER ANALYTICS</strong>는 기후 변화의 흐름을 데이터로 증명합니다. 단순한 일기예보를 넘어, '작년의 오늘'과 '올해의 오늘'을 정밀하게
-                    대조함으로써 우리가 체감하는 계절의 변화를 수치화하여 제공합니다.</p>
-                <p>농업, 야외 행사 계획, 혹은 단순한 기후 변화에 대한 호기심을 충족시키기 위해 설계되었으며, 과거의 기록을 거울삼아 현재의 날씨를 더 깊이 이해하는 것을 목표로 합니다.</p>
+                <p><strong>WEATHER ANALYTICS</strong>는 단순한 일기예보를 넘어, 기후 변화를 체감하고 싶은 모든 분을 위한 <strong>사용자 중심 데이터
+                        리포트</strong>입니다. (최종 업데이트: 2026년 2월)</p>
+                <div class="use-case-grid">
+                    <div class="use-case-item">
+                        <h4>누가 사용하나요?</h4>
+                        <p>기후 변화에 민감한 농업 종사자, 여행 계획을 세우는 여행가, 패션 트렌드에 관심 있는 분들이 주로 사용합니다.</p>
+                    </div>
+                    <div class="use-case-item">
+                        <h4>언제 사용하나요?</h4>
+                        <p>옷장을 정리하는 환절기, 작년 이맘때 입었던 옷이 기억나지 않을 때, 혹은 기후 위기의 증거를 수치로 확인하고 싶을 때 유용합니다.</p>
+                    </div>
+                    <div class="use-case-item">
+                        <h4>어떻게 사용하나요?</h4>
+                        <p>지역을 검색하고 '분석하기' 버튼을 누르기만 하세요. AI가 작년 동기 대비 온도 편차를 분석하여 최적의 가이드를 드립니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="history-section info-card reveal">
+            <h2 class="section-title">자주 묻는 질문 (FAQ)</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3 class="faq-question">Q. 작년 오늘보다 얼마나 더 추워졌나요?</h3>
+                    <p class="faq-answer">분석 도구에서 도시를 검색하면 작년 실측 데이터와 올해 예보 데이터를 0.1도 단위로 정밀 대조하여 상단의 '기온 변동' 리포트에서 바로
+                        확인할 수 있습니다.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Q. 옷차림 추천은 어떤 기준으로 이루어지나요?</h3>
+                    <p class="faq-answer">실시간 기후 분석 알고리즘이 체감 온도를 계산하여 5도 미만(동계), 12도 미만(간절기), 20도 미만(환절기), 20도 이상(하계) 등
+                        4단계 맞춤형 가이드를 제공합니다.</p>
+                </div>
             </div>
         </section>
 

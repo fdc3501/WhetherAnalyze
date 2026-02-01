@@ -224,6 +224,26 @@ document.addEventListener('DOMContentLoaded', () => {
         outfitText.textContent = outfit.text;
         outfitCard.classList.remove('hidden');
 
+        // GEO: Generate AI Insight
+        const aiInsightArea = document.getElementById('aiInsightArea');
+        const aiInsightText = document.getElementById('aiInsightText');
+        if (aiInsightArea && aiInsightText) {
+            let insight = `오늘의 최고 기온은 **${curTemp.toFixed(1)}°C**로, 작년 동일 지점의 **${lastYearTemp.toFixed(1)}°C**와 비교했을 때 `;
+            if (Math.abs(diff) < 1) {
+                insight += `거의 비슷한 수준을 유지하고 있습니다. `;
+            } else if (diff > 0) {
+                insight += `약 **${diff}°C 더 따뜻한** 경향을 보이고 있습니다. `;
+            } else {
+                insight += `약 **${Math.abs(diff)}°C 더 서늘한** 날씨입니다. `;
+            }
+
+            insight += `추천드리는 옷차림인 **${outfit.text}**을 착용하시면 야외 활동 시 더욱 쾌적할 것으로 예상됩니다. `;
+            insight += `지속적인 데이터 트래킹을 통해 나만의 기상 인사이트를 쌓아보세요!`;
+
+            aiInsightText.innerHTML = insight.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            aiInsightArea.classList.remove('hidden');
+        }
+
         renderFavorites();
         renderContent();
     }
