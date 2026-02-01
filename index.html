@@ -181,8 +181,14 @@
         <section id="analysis" class="generator-card reveal">
             <div class="selection-area">
                 <div class="search-container">
-                    <input type="text" id="citySearch" class="styled-input" placeholder="도시 이름을 검색하세요... (예: 서울, Tokyo)"
-                        data-i18n-placeholder="search_placeholder" autocomplete="off">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="citySearch" class="styled-input"
+                            placeholder="도시 이름을 검색하세요... (예: 서울, Tokyo)" data-i18n-placeholder="search_placeholder"
+                            autocomplete="off">
+                        <button id="geoBtn" class="geo-btn" title="내 위치 추천">
+                            <i data-lucide="map-pin"></i>
+                        </button>
+                    </div>
                     <div id="searchResults" class="search-results hidden"></div>
                 </div>
                 <button id="updateBtn" class="primary-btn" data-i18n="analyze_btn">분석하기</button>
@@ -249,16 +255,16 @@
                 <div id="shareArea" class="share-container hidden">
                     <p class="share-label" data-i18n="share_label">분석 결과 공유하고 친구들에게 자랑하기</p>
                     <div class="share-buttons">
-                        <button onclick="shareToKakao()" class="share-btn kakao" title="카카오톡 공유">
+                        <button id="shareKakao" class="share-btn kakao" title="카카오톡 공유">
                             <i data-lucide="message-circle"></i>
                         </button>
-                        <button onclick="shareToTwitter()" class="share-btn twitter" title="X(트위터) 공유">
+                        <button id="shareTwitter" class="share-btn twitter" title="X(트위터) 공유">
                             <i data-lucide="twitter"></i>
                         </button>
-                        <button onclick="shareToFacebook()" class="share-btn facebook" title="페이스북 공유">
+                        <button id="shareFacebook" class="share-btn facebook" title="페이스북 공유">
                             <i data-lucide="facebook"></i>
                         </button>
-                        <button onclick="copyPageLink()" class="share-btn copy" title="링크 복사">
+                        <button id="copyLink" class="share-btn copy" title="링크 복사">
                             <i data-lucide="link"></i>
                         </button>
                     </div>
