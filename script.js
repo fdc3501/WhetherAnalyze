@@ -62,9 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function searchCities(query) {
         try {
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`);
-            const data = await res.json();
-            renderSearchResults(data.results || []);
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&accept-language=ko&limit=10`);
+            const results = await res.json();
+
+            // Map Nominatim results to our expected format
+            const mappedResults = results.map(r => ({
+                latitude: parseFloat(r.lat),
+                longitude: parseFloat(r.lon),
+                name: r.name || r.display_name.split(',')[0],
+                country: r.address.country || '',
+                admin1: r.address.state || r.address.province || r.address.region || (r.address.city !== r.name ? r.address.city : '')
+            }));
+
+            renderSearchResults(mappedResults);
         } catch (err) {
             console.error('Search error:', err);
         }
@@ -95,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         name: city.name,
                         country: city.country
                     };
-                    citySearch.value = `${city.name} (${city.country})`;
+                    citySearch.value = city.country && city.name !== city.country ? `${city.name} (${city.country})` : city.name;
                     searchResults.classList.add('hidden');
                     updateDashboard();
                 });
@@ -137,7 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
         favoritesList.innerHTML = '';
         favorites.forEach(city => {
             const chip = document.createElement('div');
-            chip.className = `fav-chip ${selectedCity.lat === city.lat && selectedCity.lon === city.lon ? 'active' : ''}`;
+            const isActive = selectedCity.lat.toFixed(2) === city.lat.toFixed(2) && selectedCity.lon.toFixed(2) === city.lon.toFixed(2);
+            chip.className = `fav-chip ${isActive ? 'active' : ''}`;
             chip.innerHTML = `<span>${city.name}</span>`;
             chip.addEventListener('click', () => {
                 selectedCity = city;
