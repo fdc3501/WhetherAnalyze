@@ -77,15 +77,20 @@
         </section>
 
         <section id="analysis" class="generator-card reveal">
-            <div class="selection-area">
-                <select id="locationSelect" class="styled-select">
-                    <option value="seoul">서울 (Seoul)</option>
-                    <option value="busan">부산 (Busan)</option>
-                    <option value="incheon">인천 (Incheon)</option>
-                    <option value="daegu">대구 (Daegu)</option>
-                    <option value="jeju">제주 (Jeju)</option>
-                </select>
-                <button id="updateBtn" class="primary-btn">데이터 분석하기</button>
+            <div class="search-wrapper">
+                <div class="search-input-group">
+                    <input type="text" id="citySearch" class="styled-input"
+                        placeholder="국가 또는 도시 이름을 검색하세요 (예: 서울, New York, Tokyo...)" autocomplete="off">
+                    <div id="searchResults" class="search-results hidden"></div>
+                </div>
+                <button id="updateBtn" class="primary-btn">분석하기</button>
+            </div>
+
+            <div id="favoritesArea" class="favorites-area">
+                <span class="favorites-label">즐겨찾기:</span>
+                <div id="favoritesList" class="favorites-list">
+                    <!-- Favorite items will appear here -->
+                </div>
             </div>
 
             <div class="stats-container">

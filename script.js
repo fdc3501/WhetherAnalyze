@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const updateBtn = document.getElementById('updateBtn');
-    const locationSelect = document.getElementById('locationSelect');
+    const citySearch = document.getElementById('citySearch');
+    const searchResults = document.getElementById('searchResults');
+    const favoritesList = document.getElementById('favoritesList');
+
     const currentTempEl = document.getElementById('currentTemp');
     const currentPrecipEl = document.getElementById('currentPrecip');
     const lastYearPrecipEl = document.getElementById('lastYearPrecip');
     const tempDiffEl = document.getElementById('tempDiff');
-    const summaryText = document.getElementById('summaryText');
     const tabBtns = document.querySelectorAll('.tab-btn');
     const chartWrapper = document.getElementById('chartWrapper');
     const weatherGrid = document.getElementById('weatherGrid');
@@ -18,14 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let weatherChart;
     let cachedData = null;
     let currentTab = 'temp';
-
-    const coords = {
-        seoul: { lat: 37.5665, lon: 126.9780, name: '서울' },
-        busan: { lat: 35.1796, lon: 129.0756, name: '부산' },
-        incheon: { lat: 37.4563, lon: 126.7052, name: '인천' },
-        daegu: { lat: 35.8714, lon: 128.6014, name: '대구' },
-        jeju: { lat: 33.4890, lon: 126.4983, name: '제주' }
-    };
+    let selectedCity = { lat: 37.5665, lon: 126.9780, name: '서울', country: 'South Korea' };
+    let favorites = JSON.parse(localStorage.getItem('weatherFavorites')) || [
+        { lat: 37.5665, lon: 126.9780, name: '서울', country: 'South Korea' },
+        { lat: 35.1796, lon: 129.0756, name: '부산', country: 'South Korea' },
+        { lat: 33.4890, lon: 126.4983, name: '제주', country: 'South Korea' },
+        { lat: 35.6895, lon: 139.6917, name: 'Tokyo', country: 'Japan' },
+        { lat: 40.7128, lon: -74.0060, name: 'New York', country: 'USA' }
+    ];
 
     function getWeatherStatus(temp, precip) {
         if (precip <= 0.1) return '맑음';
@@ -46,8 +48,109 @@ document.addEventListener('DOMContentLoaded', () => {
         return { img: 'outfit_summer.png', text: '가벼운 셔츠나 반팔! 👕' };
     }
 
-    async function fetchWeatherData(location) {
-        const { lat, lon } = coords[location];
+    // --- Search Logic ---
+    let searchTimeout;
+    citySearch.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        const query = e.target.value.trim();
+        if (query.length < 2) {
+            searchResults.classList.add('hidden');
+            return;
+        }
+        searchTimeout = setTimeout(() => searchCities(query), 300);
+    });
+
+    async function searchCities(query) {
+        try {
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`);
+            const data = await res.json();
+            renderSearchResults(data.results || []);
+        } catch (err) {
+            console.error('Search error:', err);
+        }
+    }
+
+    function renderSearchResults(results) {
+        searchResults.innerHTML = '';
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div class="result-item">검색 결과가 없습니다.</div>';
+        } else {
+            results.forEach(city => {
+                const isFav = favorites.some(f => f.lat.toFixed(2) === city.latitude.toFixed(2) && f.lon.toFixed(2) === city.longitude.toFixed(2));
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.innerHTML = `
+                    <div class="city-info" data-lat="${city.latitude}" data-lon="${city.longitude}" data-name="${city.name}" data-country="${city.country}">
+                        <span class="city-name">${city.name}${city.admin1 ? ', ' + city.admin1 : ''}</span>
+                        <span class="city-country">${city.country}</span>
+                    </div>
+                    <button class="fav-star ${isFav ? 'active' : ''}" data-city='${JSON.stringify({ lat: city.latitude, lon: city.longitude, name: city.name, country: city.country })}'>★</button>
+                `;
+
+                // Select city click
+                item.querySelector('.city-info').addEventListener('click', () => {
+                    selectedCity = {
+                        lat: city.latitude,
+                        lon: city.longitude,
+                        name: city.name,
+                        country: city.country
+                    };
+                    citySearch.value = `${city.name} (${city.country})`;
+                    searchResults.classList.add('hidden');
+                    updateDashboard();
+                });
+
+                // Favorite toggle click
+                item.querySelector('.fav-star').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const cityData = JSON.parse(e.target.dataset.city);
+                    toggleFavorite(cityData);
+                    e.target.classList.toggle('active');
+                });
+
+                searchResults.appendChild(item);
+            });
+        }
+        searchResults.classList.remove('hidden');
+    }
+
+    // Click outside search results to hide
+    document.addEventListener('click', (e) => {
+        if (!citySearch.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.add('hidden');
+        }
+    });
+
+    // --- Favorites Logic ---
+    function toggleFavorite(city) {
+        const index = favorites.findIndex(f => f.lat.toFixed(2) === city.lat.toFixed(2) && f.lon.toFixed(2) === city.lon.toFixed(2));
+        if (index > -1) {
+            favorites.splice(index, 1);
+        } else {
+            favorites.push(city);
+        }
+        localStorage.setItem('weatherFavorites', JSON.stringify(favorites));
+        renderFavorites();
+    }
+
+    function renderFavorites() {
+        favoritesList.innerHTML = '';
+        favorites.forEach(city => {
+            const chip = document.createElement('div');
+            chip.className = `fav-chip ${selectedCity.lat === city.lat && selectedCity.lon === city.lon ? 'active' : ''}`;
+            chip.innerHTML = `<span>${city.name}</span>`;
+            chip.addEventListener('click', () => {
+                selectedCity = city;
+                citySearch.value = `${city.name} (${city.country})`;
+                updateDashboard();
+            });
+            favoritesList.appendChild(chip);
+        });
+    }
+
+    // --- Weather Data Logic ---
+    async function fetchWeatherData() {
+        const { lat, lon } = selectedCity;
         const today = new Date();
         const formatDate = (d) => d.toISOString().split('T')[0];
 
@@ -67,6 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const archiveRes = await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${formatDate(startDate2025)}&end_date=${formatDate(endDate2025)}&daily=temperature_2m_max,precipitation_sum&timezone=auto`);
             const archiveData = await archiveRes.json();
 
+            if (!forecastData.daily || !archiveData.daily) throw new Error('Invalid data');
+
             cachedData = {
                 labels: forecastData.daily.time.map(t => t.split('-').slice(1).join('/')),
                 thisYearTemp: forecastData.daily.temperature_2m_max,
@@ -77,40 +182,41 @@ document.addEventListener('DOMContentLoaded', () => {
             return cachedData;
         } catch (error) {
             console.error('Weather Data Error:', error);
+            alert('날씨 데이터를 가져오는 중 오류가 발생했습니다.');
             return null;
         } finally {
             updateBtn.disabled = false;
-            updateBtn.textContent = '데이터 분석하기';
+            updateBtn.textContent = '분석하기';
         }
     }
 
-    async function updateDashboard(location) {
-        const data = await fetchWeatherData(location);
+    async function updateDashboard() {
+        const data = await fetchWeatherData();
         if (!data) return;
 
         const todayIdx = 10;
         const curTemp = data.thisYearTemp[todayIdx];
         const curPrecip = data.thisYearPrecip[todayIdx];
-        const diff = (curTemp - data.lastYearTemp[todayIdx]).toFixed(1);
+        const lastYearTemp = data.lastYearTemp[todayIdx];
+        const diff = (curTemp - lastYearTemp).toFixed(1);
 
-        currentTempEl.textContent = `${curTemp.toFixed(1)}°C`;
+        currentTempEl.textContent = `${curTemp !== null ? curTemp.toFixed(1) : '--'}°C`;
         currentPrecipEl.textContent = getWeatherStatus(curTemp, curPrecip);
-        lastYearPrecipEl.textContent = getWeatherStatus(data.lastYearTemp[todayIdx], data.lastYearPrecip[todayIdx]);
+        lastYearPrecipEl.textContent = getWeatherStatus(lastYearTemp, data.lastYearPrecip[todayIdx]);
         tempDiffEl.textContent = `${diff > 0 ? '+' : ''}${diff}°C`;
         tempDiffEl.style.color = diff > 0 ? '#ef4444' : '#3b82f6';
 
-        // Update Outfit
         const outfit = getOutfitData(curTemp);
         outfitImg.src = outfit.img;
         outfitText.textContent = outfit.text;
         outfitCard.classList.remove('hidden');
 
+        renderFavorites();
         renderContent();
     }
 
     function renderContent() {
         if (!cachedData) return;
-
         if (currentTab === 'temp') {
             chartWrapper.classList.remove('hidden');
             weatherGrid.classList.add('hidden');
@@ -127,15 +233,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const todayIdx = 10;
         const pointRadii = new Array(cachedData.labels.length).fill(3);
-        const pointHoverRadii = new Array(cachedData.labels.length).fill(5);
         const pointBackgrounds = new Array(cachedData.labels.length).fill('#6366f1');
-        const pointBorderWidths = new Array(cachedData.labels.length).fill(1);
 
-        // Highlight today point
         pointRadii[todayIdx] = 8;
-        pointHoverRadii[todayIdx] = 10;
-        pointBackgrounds[todayIdx] = '#ef4444'; // Bright red for today
-        pointBorderWidths[todayIdx] = 3;
+        pointBackgrounds[todayIdx] = '#ef4444';
 
         weatherChart = new Chart(ctx, {
             type: 'line',
@@ -143,17 +244,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: cachedData.labels,
                 datasets: [
                     {
-                        label: '올해 최고 기온 (2026)',
+                        label: `올해 최고 기온 (2026, ${selectedCity.name})`,
                         data: cachedData.thisYearTemp,
                         borderColor: '#6366f1',
                         fill: true,
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         tension: 0.4,
                         pointRadius: pointRadii,
-                        pointHoverRadius: pointHoverRadii,
                         pointBackgroundColor: pointBackgrounds,
                         pointBorderColor: '#fff',
-                        pointBorderWidth: pointBorderWidths
+                        pointBorderWidth: 2
                     },
                     {
                         label: '작년 최고 기온 (2025)',
@@ -161,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         borderColor: '#94a3b8',
                         borderDash: [5, 5],
                         tension: 0.4,
-                        pointRadius: 0 // Hide points for last year to focus on this year
+                        pointRadius: 0
                     }
                 ]
             },
@@ -195,10 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const isToday = i === 10;
             const tile = document.createElement('div');
             tile.className = `status-tile ${isToday ? 'is-today' : ''}`;
-
             const curIcon = getStatusIcon(cachedData.thisYearTemp[i], cachedData.thisYearPrecip[i]);
             const lyIcon = getStatusIcon(cachedData.lastYearTemp[i], cachedData.lastYearPrecip[i]);
-
             tile.innerHTML = `
                 ${isToday ? '<span class="today-badge">TODAY</span>' : ''}
                 <div class="tile-date">${date}</div>
@@ -226,9 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    updateBtn.addEventListener('click', () => updateDashboard(locationSelect.value));
+    updateBtn.addEventListener('click', updateDashboard);
 
-    // Scroll To Top Logic
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) {
             scrollTopBtn.classList.remove('hidden');
@@ -241,7 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Scroll Reveal Logic
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -252,5 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    updateDashboard('seoul');
+    // Initialize
+    renderFavorites();
+    updateDashboard();
 });
