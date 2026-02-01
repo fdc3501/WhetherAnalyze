@@ -390,3 +390,50 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFavorites();
     updateDashboard();
 });
+
+// --- Share Logic --- (Bound to window for inline onclick)
+function getShareText() {
+    const city = document.getElementById('citySearch').value || '우리 동네';
+    const temp = document.getElementById('currentTemp').textContent;
+    const diff = document.getElementById('tempDiff').textContent;
+    return `[${city}] 오늘 최고 기온은 ${temp}! 작년보다 ${diff} 달라졌어요. WEATHER ANALYTICS에서 확인해보세요.`;
+}
+
+window.shareToTwitter = function () {
+    const text = getShareText();
+    const url = 'https://whetheranalyze.pages.dev/';
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+};
+
+window.shareToFacebook = function () {
+    const url = 'https://whetheranalyze.pages.dev/';
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+};
+
+window.shareToKakao = function () {
+    const url = 'https://whetheranalyze.pages.dev/';
+    window.open(`https://story.kakao.com/share?url=${encodeURIComponent(url)}`, '_blank');
+};
+
+window.copyPageLink = function () {
+    const url = 'https://whetheranalyze.pages.dev/';
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('링크가 복사되었습니다! 🔗');
+    }).catch(err => {
+        console.error('Clipboard error:', err);
+    });
+};
+
+function showToast(message) {
+    let toast = document.querySelector('.toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
