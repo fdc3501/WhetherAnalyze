@@ -29,10 +29,134 @@ document.addEventListener('DOMContentLoaded', () => {
         { lat: 40.7128, lon: -74.0060, name: 'New York', country: 'USA' }
     ];
 
+    // --- i18n Dictionary ---
+    const i18n = {
+        ko: {
+            nav_home: "홈",
+            nav_analysis: "분석 도구",
+            nav_about: "서비스 소개",
+            nav_methodology: "분석 방법",
+            nav_partnership: "제휴 문의",
+            nav_privacy: "개인정보처리방침",
+            hero_subtitle: "올해와 작년의 오늘 날씨 비교 분석,<br>기후 변화 데이터를 한눈에 확인하세요.",
+            cta_text: "날씨 데이터 비교 시작하기",
+            search_placeholder: "도시 이름을 검색하세요... (예: 서울, Tokyo)",
+            analyze_btn: "분석하기",
+            favorites_label: "즐겨찾기:",
+            stat_today: "올해 최고 기온",
+            stat_status: "오늘의 날씨",
+            stat_variance: "기온 변동 (작년 대비)",
+            stat_lastyear: "작년 오늘의 날씨",
+            outfit_title: "분석 기반 오늘의 옷차림 추천",
+            tab_temp: "기온 변화 그래프",
+            tab_grid: "통계 데이터 상세",
+            insight_title: "오늘의 날씨 분석 리포트",
+            share_label: "분석 결과 공유하고 친구들에게 자랑하기",
+            outfit_winter: "롱패딩, 목도리 필수! ❄️",
+            outfit_coat: "코트나 가죽자켓이 좋아요! 🧥",
+            outfit_jacket: "자켓이나 가디건 추천! 🧥",
+            outfit_summer: "가벼운 셔츠나 반팔! 👕",
+            clear: "맑음",
+            snow: "눈 ❄️",
+            rain: "비 🌧️",
+            no_results: "검색 결과가 없습니다.",
+            analyzing: "분석 중...",
+            copy_success: "링크가 복사되었습니다! 🔗",
+            insight_intro: "오늘의 최고 기온은 **{curTemp}°C**로, 작년 동일 지점의 **{lastYearTemp}°C**와 비교했을 때 ",
+            insight_similar: "거의 비슷한 수준을 유지하고 있습니다. ",
+            insight_warmer: "약 **{diff}°C 더 따뜻한** 경향을 보이고 있습니다. ",
+            insight_cooler: "약 **{diff}°C 더 서늘한** 날씨입니다. ",
+            insight_outro: "추천드리는 옷차림인 **{outfit}**을 착용하시면 야외 활동 시 더욱 쾌적할 것으로 예상됩니다. 지속적인 데이터 트래킹을 통해 나만의 기상 인사이트를 쌓아보세요!",
+            share_msg: "[{city}] 오늘 최고 기온은 {temp}! 작년보다 {diff} 달라졌어요. WEATHER ANALYTICS에서 확인해보세요.",
+            chart_label_this_year: "올해 최고 기온 ({year}, {city})",
+            chart_label_last_year: "작년 최고 기온 ({year})",
+            today_star: "오늘 ★",
+            today_badge: "오늘",
+            my_location: "우리 동네"
+        },
+        en: {
+            nav_home: "Home",
+            nav_analysis: "Tools",
+            nav_about: "About",
+            nav_methodology: "Method",
+            nav_partnership: "Contact",
+            nav_privacy: "Privacy",
+            hero_subtitle: "Comparative analysis of today's weather vs last year,<br>Check climate change data at a glance.",
+            cta_text: "Start Weather Comparison",
+            search_placeholder: "Search for a city... (e.g. New York, Tokyo)",
+            analyze_btn: "Analyze",
+            favorites_label: "Favorites:",
+            stat_today: "Today's Max",
+            stat_status: "Today's Status",
+            stat_variance: "Variance (vs Last Year)",
+            stat_lastyear: "Last Year's Today",
+            outfit_title: "Analysis-based Outfit Recommendation",
+            tab_temp: "Temp Variance Graph",
+            tab_grid: "Detailed Statistics",
+            insight_title: "Today's Weather Analysis Report",
+            share_label: "Share your results with friends!",
+            outfit_winter: "Puffer coat and scarf are a must! ❄️",
+            outfit_coat: "A coat or leather jacket is good! 🧥",
+            outfit_jacket: "Recommend a jacket or cardigan! 🧥",
+            outfit_summer: "Light shirt or short sleeves! 👕",
+            clear: "Clear",
+            snow: "Snow ❄️",
+            rain: "Rain 🌧️",
+            no_results: "No results found.",
+            analyzing: "Analyzing...",
+            copy_success: "Link copied to clipboard! 🔗",
+            insight_intro: "Today's max temperature is **{curTemp}°C**, compared to **{lastYearTemp}°C** at the same location last year, it is ",
+            insight_similar: "staying at almost the same level. ",
+            insight_warmer: "showing a trend of being about **{diff}°C warmer**. ",
+            insight_cooler: "about **{diff}°C cooler**. ",
+            insight_outro: "We recommend wearing **{outfit}** for a more comfortable outdoor experience. Build your own weather insights through continuous data tracking!",
+            share_msg: "[{city}] Today's max is {temp}! It changed by {diff} compared to last year. Check it out on WEATHER ANALYTICS.",
+            chart_label_this_year: "This Year Max ({year}, {city})",
+            chart_label_last_year: "Last Year Max ({year})",
+            today_star: "Today ★",
+            today_badge: "TODAY",
+            my_location: "My Location"
+        }
+    };
+
+    let currentLang = localStorage.getItem('weatherLang') || (navigator.language.startsWith('ko') ? 'ko' : 'en');
+
+    function applyLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('weatherLang', lang);
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (i18n[lang][key]) {
+                el.innerHTML = i18n[lang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (i18n[lang][key]) {
+                el.placeholder = i18n[lang][key];
+            }
+        });
+
+        // Update switcher UI
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`lang-${lang}`).classList.add('active');
+
+        // Re-render components that depend on language
+        if (cachedData) {
+            updateDashboard();
+        }
+        renderFavorites();
+    }
+
+    document.getElementById('lang-ko').addEventListener('click', () => applyLanguage('ko'));
+    document.getElementById('lang-en').addEventListener('click', () => applyLanguage('en'));
+
     function getWeatherStatus(temp, precip) {
-        if (precip <= 0.1) return '맑음';
-        if (temp <= 0) return '눈 ❄️';
-        return '비 🌧️';
+        if (precip <= 0.1) return i18n[currentLang].clear;
+        if (temp <= 0) return i18n[currentLang].snow;
+        return i18n[currentLang].rain;
     }
 
     function getStatusIcon(temp, precip) {
@@ -42,10 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getOutfitData(temp) {
-        if (temp < 5) return { img: 'outfit_winter.png', text: '롱패딩, 목도리 필수! ❄️' };
-        if (temp < 12) return { img: 'outfit_coat.png', text: '코트나 가죽자켓이 좋아요! 🧥' };
-        if (temp < 20) return { img: 'outfit_jacket.png', text: '자켓이나 가디건 추천! 🧥' };
-        return { img: 'outfit_summer.png', text: '가벼운 셔츠나 반팔! 👕' };
+        if (temp < 5) return { img: 'outfit_winter.png', text: i18n[currentLang].outfit_winter };
+        if (temp < 12) return { img: 'outfit_coat.png', text: i18n[currentLang].outfit_coat };
+        if (temp < 20) return { img: 'outfit_jacket.png', text: i18n[currentLang].outfit_jacket };
+        return { img: 'outfit_summer.png', text: i18n[currentLang].outfit_summer };
     }
 
     // --- Search Logic ---
@@ -62,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function searchCities(query) {
         try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&accept-language=ko&limit=10`);
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&accept-language=${currentLang}&limit=10`);
             const results = await res.json();
 
             // Map Nominatim results to our expected format
@@ -83,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSearchResults(results) {
         searchResults.innerHTML = '';
         if (results.length === 0) {
-            searchResults.innerHTML = '<div class="result-item">검색 결과가 없습니다.</div>';
+            searchResults.innerHTML = `<div class="result-item">${i18n[currentLang].no_results}</div>`;
         } else {
             results.forEach(city => {
                 const isFav = favorites.some(f => f.lat.toFixed(2) === city.latitude.toFixed(2) && f.lon.toFixed(2) === city.longitude.toFixed(2));
@@ -173,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             updateBtn.disabled = true;
-            updateBtn.textContent = '업데이트 중...';
+            updateBtn.textContent = i18n[currentLang].analyzing;
 
             const forecastRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,precipitation_sum&past_days=10&forecast_days=14&timezone=auto`);
             const forecastData = await forecastRes.json();
@@ -197,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         } finally {
             updateBtn.disabled = false;
-            updateBtn.textContent = '분석하기';
+            updateBtn.textContent = i18n[currentLang].analyze_btn;
         }
     }
 
@@ -228,17 +352,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const aiInsightArea = document.getElementById('aiInsightArea');
         const aiInsightText = document.getElementById('aiInsightText');
         if (aiInsightArea && aiInsightText) {
-            let insight = `오늘의 최고 기온은 **${curTemp.toFixed(1)}°C**로, 작년 동일 지점의 **${lastYearTemp.toFixed(1)}°C**와 비교했을 때 `;
+            const dict = i18n[currentLang];
+            let insight = dict.insight_intro.replace('{curTemp}', curTemp.toFixed(1)).replace('{lastYearTemp}', lastYearTemp.toFixed(1));
+
             if (Math.abs(diff) < 1) {
-                insight += `거의 비슷한 수준을 유지하고 있습니다. `;
+                insight += dict.insight_similar;
             } else if (diff > 0) {
-                insight += `약 **${diff}°C 더 따뜻한** 경향을 보이고 있습니다. `;
+                insight += dict.insight_warmer.replace('{diff}', diff);
             } else {
-                insight += `약 **${Math.abs(diff)}°C 더 서늘한** 날씨입니다. `;
+                insight += dict.insight_cooler.replace('{diff}', Math.abs(diff));
             }
 
-            insight += `추천드리는 옷차림인 **${outfit.text}**을 착용하시면 야외 활동 시 더욱 쾌적할 것으로 예상됩니다. `;
-            insight += `지속적인 데이터 트래킹을 통해 나만의 기상 인사이트를 쌓아보세요!`;
+            insight += dict.insight_outro.replace('{outfit}', outfit.text);
 
             aiInsightText.innerHTML = insight.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             aiInsightArea.classList.remove('hidden');
@@ -282,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: cachedData.labels,
                 datasets: [
                     {
-                        label: `올해 최고 기온 (2026, ${selectedCity.name})`,
+                        label: i18n[currentLang].chart_label_this_year.replace('{year}', '2026').replace('{city}', selectedCity.name),
                         data: cachedData.thisYearTemp,
                         borderColor: '#6366f1',
                         fill: true,
@@ -294,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         pointBorderWidth: 2
                     },
                     {
-                        label: '작년 최고 기온 (2025)',
+                        label: i18n[currentLang].chart_label_last_year.replace('{year}', '2025'),
                         data: cachedData.lastYearTemp,
                         borderColor: '#94a3b8',
                         borderDash: [5, 5],
@@ -316,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 if (label) label += ': ';
                                 if (context.parsed.y !== null) label += context.parsed.y + '°C';
                                 if (context.dataIndex === todayIdx && context.datasetIndex === 0) {
-                                    label += ' (오늘 ★)';
+                                    label += ` (${i18n[currentLang].today_star})`;
                                 }
                                 return label;
                             }
@@ -336,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const curIcon = getStatusIcon(cachedData.thisYearTemp[i], cachedData.thisYearPrecip[i]);
             const lyIcon = getStatusIcon(cachedData.lastYearTemp[i], cachedData.lastYearPrecip[i]);
             tile.innerHTML = `
-                ${isToday ? '<span class="today-badge">TODAY</span>' : ''}
+                ${isToday ? `<span class="today-badge">${i18n[currentLang].today_badge}</span>` : ''}
                 <div class="tile-date">${date}</div>
                 <div class="tile-comparison">
                     <div class="compare-item">
@@ -387,16 +512,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
     // Initialize
-    renderFavorites();
-    updateDashboard();
+    applyLanguage(currentLang);
 });
 
 // --- Share Logic --- (Bound to window for inline onclick)
 function getShareText() {
-    const city = document.getElementById('citySearch').value || '우리 동네';
+    const dict = i18n[localStorage.getItem('weatherLang') || 'ko'];
+    const city = document.getElementById('citySearch').value || (localStorage.getItem('weatherLang') === 'ko' ? dict.my_location : dict.my_location);
     const temp = document.getElementById('currentTemp').textContent;
     const diff = document.getElementById('tempDiff').textContent;
-    return `[${city}] 오늘 최고 기온은 ${temp}! 작년보다 ${diff} 달라졌어요. WEATHER ANALYTICS에서 확인해보세요.`;
+    return dict.share_msg.replace('{city}', city).replace('{temp}', temp).replace('{diff}', diff);
 }
 
 window.shareToTwitter = function () {
@@ -416,9 +541,10 @@ window.shareToKakao = function () {
 };
 
 window.copyPageLink = function () {
+    const lang = localStorage.getItem('weatherLang') || 'ko';
     const url = 'https://whetheranalyze.pages.dev/';
     navigator.clipboard.writeText(url).then(() => {
-        showToast('링크가 복사되었습니다! 🔗');
+        showToast(i18n[lang].copy_success);
     }).catch(err => {
         console.error('Clipboard error:', err);
     });

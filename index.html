@@ -141,12 +141,19 @@
     <main class="container">
         <section class="hero-section">
             <nav class="nav-menu">
-                <a href="#">홈</a>
-                <a href="#analysis">분석 도구</a>
-                <a href="#about">서비스 소개</a>
-                <a href="#methodology">분석 방법</a>
-                <a href="#partnership">제휴 문의</a>
-                <a href="#privacy">개인정보처리방침</a>
+                <div class="nav-links">
+                    <a href="#" data-i18n="nav_home">홈</a>
+                    <a href="#analysis" data-i18n="nav_analysis">분석 도구</a>
+                    <a href="#about" data-i18n="nav_about">서비스 소개</a>
+                    <a href="#methodology" data-i18n="nav_methodology">분석 방법</a>
+                    <a href="#partnership" data-i18n="nav_partnership">제휴 문의</a>
+                    <a href="#privacy" data-i18n="nav_privacy">개인정보처리방침</a>
+                </div>
+                <div class="lang-switcher">
+                    <button id="lang-ko" class="lang-btn active">KR</button>
+                    <span class="lang-divider">|</span>
+                    <button id="lang-en" class="lang-btn">EN</button>
+                </div>
             </nav>
 
             <div class="hero-wrapper">
@@ -158,10 +165,11 @@
                 </div>
                 <div class="hero-text-area">
                     <h1 class="hero-title">WEATHER<br><span class="accent-text">ANALYTICS</span></h1>
-                    <h2 class="hero-subtitle">올해와 작년의 오늘 날씨 비교 분석,<br>기후 변화 데이터를 한눈에 확인하세요.</h2>
+                    <h2 class="hero-subtitle" data-i18n="hero_subtitle">올해와 작년의 오늘 날씨 비교 분석,<br>기후 변화 데이터를 한눈에 확인하세요.
+                    </h2>
 
                     <div class="scroll-cta">
-                        <div class="cta-text">날씨 데이터 비교 시작하기</div>
+                        <div class="cta-text" data-i18n="cta_text">날씨 데이터 비교 시작하기</div>
                         <div class="cta-arrow">
                             <span></span>
                         </div>
@@ -171,17 +179,17 @@
         </section>
 
         <section id="analysis" class="generator-card reveal">
-            <div class="search-wrapper">
-                <div class="search-input-group">
-                    <input type="text" id="citySearch" class="styled-input"
-                        placeholder="국가 또는 도시 이름을 검색하세요 (예: 서울, New York, Tokyo...)" autocomplete="off">
+            <div class="selection-area">
+                <div class="search-container">
+                    <input type="text" id="citySearch" class="styled-input" placeholder="도시 이름을 검색하세요... (예: 서울, Tokyo)"
+                        data-i18n-placeholder="search_placeholder" autocomplete="off">
                     <div id="searchResults" class="search-results hidden"></div>
                 </div>
-                <button id="updateBtn" class="primary-btn">분석하기</button>
+                <button id="updateBtn" class="primary-btn" data-i18n="analyze_btn">분석하기</button>
             </div>
 
-            <div id="favoritesArea" class="favorites-area">
-                <span class="favorites-label">즐겨찾기:</span>
+            <div class="favorites-area">
+                <span class="favorites-label" data-i18n="favorites_label">즐겨찾기:</span>
                 <div id="favoritesList" class="favorites-list">
                     <!-- Favorite items will appear here -->
                 </div>
@@ -190,25 +198,25 @@
             <div class="stats-container">
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <span class="stat-label">오늘 최고 기온</span>
+                        <span class="stat-label" data-i18n="stat_today">올해 최고 기온</span>
                         <span class="stat-value" id="currentTemp">--°C</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">상태 (올해)</span>
+                        <span class="stat-label" data-i18n="stat_status">오늘의 날씨</span>
                         <span class="stat-value" id="currentPrecip">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">상태 (작년)</span>
-                        <span class="stat-value" id="lastYearPrecip">--</span>
+                        <span class="stat-label" data-i18n="stat_variance">기온 변동 (작년 대비)</span>
+                        <span class="stat-value" id="tempDiff">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">기온 변동</span>
-                        <span class="stat-value" id="tempDiff">--</span>
+                        <span class="stat-label" data-i18n="stat_lastyear">작년 오늘의 날씨</span>
+                        <span class="stat-value" id="lastYearPrecip">--</span>
                     </div>
                 </div>
 
                 <div id="outfitCard" class="outfit-card hidden">
-                    <h3 class="outfit-title">분석 기반 오늘의 옷차림 추천</h3>
+                    <h3 class="outfit-title" data-i18n="outfit_title">분석 기반 오늘의 옷차림 추천</h3>
                     <div class="outfit-content">
                         <picture>
                             <source id="outfitWebp" srcset="" type="image/webp">
@@ -220,8 +228,8 @@
             </div>
 
             <div class="tabs-area">
-                <button class="tab-btn active" data-tab="temp">기온 비교</button>
-                <button class="tab-btn" data-tab="precip">강우/강설 여부</button>
+                <button class="tab-btn active" data-tab="temp" data-i18n="tab_temp">기온 변화 그래프</button>
+                <button class="tab-btn" data-tab="grid" data-i18n="tab_grid">통계 데이터 상세</button>
             </div>
 
             <div class="display-area">
@@ -233,7 +241,8 @@
                 </div>
                 <!-- GEO: AI Insights for contextual search -->
                 <div id="aiInsightArea" class="ai-insight-card hidden">
-                    <h3 class="insight-title"><span class="ai-badge">AI INSIGHT</span> 오늘의 날씨 분석 리포트</h3>
+                    <h3 class="insight-title"><span class="ai-badge">AI INSIGHT</span> <span
+                            data-i18n="insight_title">오늘의 날씨 분석 리포트</span></h3>
                     <div id="aiInsightText" class="insight-content">
                         <!-- Dynamic analysis will be inserted by JS -->
                     </div>
@@ -241,7 +250,7 @@
 
                 <!-- SNS Share Area -->
                 <div id="shareArea" class="share-container hidden">
-                    <p class="share-label">분석 결과 공유하고 친구들에게 자랑하기</p>
+                    <p class="share-label" data-i18n="share_label">분석 결과 공유하고 친구들에게 자랑하기</p>
                     <div class="share-buttons">
                         <button onclick="shareToKakao()" class="share-btn kakao" title="카카오톡 공유">
                             <i data-lucide="message-circle"></i>
