@@ -218,6 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tempDiffEl.style.color = diff > 0 ? '#ef4444' : '#3b82f6';
 
         const outfit = getOutfitData(curTemp);
+        const outfitWebp = document.getElementById('outfitWebp');
+        if (outfitWebp) outfitWebp.srcset = outfit.img.replace('.png', '.webp');
         outfitImg.src = outfit.img;
         outfitText.textContent = outfit.text;
         outfitCard.classList.remove('hidden');
